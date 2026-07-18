@@ -1,8 +1,17 @@
-import { getLocalStorage, renderListWithTemplate } from "./utils.mjs";
+import {
+  getLocalStorage,
+  loadHeaderFooter,
+  renderListWithTemplate,
+} from "./utils.mjs";
+
+loadHeaderFooter();
 
 function cartItemTemplate(item) {
-  const colorName = item.Colors && item.Colors.length > 0 ? item.Colors[0].ColorName : "";
-  
+  const colorName =
+    item.Colors && item.Colors.length > 0
+      ? item.Colors[0].ColorName
+      : "";
+
   return `<li class="cart-card divider">
     <a href="/product_pages/index.html?product=${item.Id}" class="cart-card__image">
       <img
@@ -23,17 +32,16 @@ function calculateTotal(cartItems) {
   return cartItems.reduce((total, item) => {
     const price = parseFloat(item.FinalPrice) || 0;
     const quantity = parseInt(item.Quantity) || 1;
-    return total + (price * quantity);
+    return total + price * quantity;
   }, 0);
 }
 
 function showCartFooter(cartItems) {
   const footer = document.getElementById("cartFooter");
   const totalElement = document.getElementById("cartTotal");
-  
-  if (cartItems && cartItems.length > 0) {
-    const total = calculateTotal(cartItems);
-    totalElement.textContent = total.toFixed(2);
+
+  if (cartItems.length > 0) {
+    totalElement.textContent = calculateTotal(cartItems).toFixed(2);
     footer.classList.remove("hide");
   } else {
     footer.classList.add("hide");
@@ -43,14 +51,13 @@ function showCartFooter(cartItems) {
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart") || [];
   const cartList = document.querySelector(".product-list");
-  
+
   if (cartItems.length === 0) {
-    cartList.innerHTML = '<li class="empty-cart">Your cart is empty</li>';
-    showCartFooter(cartItems);
-    return;
+    cartList.innerHTML = `<li class="empty-cart">Your cart is empty</li>`;
+  } else {
+    renderListWithTemplate(cartItemTemplate, cartList, cartItems);
   }
-  
-  renderListWithTemplate(cartItemTemplate, cartList, cartItems);
+
   showCartFooter(cartItems);
 }
 
