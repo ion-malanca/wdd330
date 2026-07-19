@@ -2,14 +2,18 @@ import { loadHeaderFooter, getParam } from "./utils.mjs";
 import ProductData from "./ProductData.mjs";
 import ProductList from "./ProductList.mjs";
 
-await loadHeaderFooter();
+async function init() {
+  await loadHeaderFooter();
 
-const category = getParam("category");
+  const category = getParam("category");
 
-const dataSource = new ProductData();
+  const dataSource = new ProductData();
 
-const element = document.querySelector(".product-list");
+  const element = document.querySelector(".product-list");
 
-const listing = new ProductList(category, dataSource, element);
+  const listing = new ProductList(category, dataSource, element);
 
-listing.init();
+  listing.init();
+}
+
+init();
